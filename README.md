@@ -2,7 +2,11 @@
 
 **KołchozTime** is a modern iOS application developed in **SwiftUI**, designed to streamline shift management and salary forecasting for shift workers. The application addresses the complexity of calculating earnings with variable rates (day/night, operator/helper roles) and shift durations (8h/12h).
 
-![App Screenshot](preview.png)
+<p align="center">
+  <img src="images/preview.png" width="250" alt="Ekran Główny">
+</p>
+
+<p align="center"><img src="images/widget.jpg" width="250" alt="Live Activities i Widgety"></p>
 
 ## 🚀 Key Features
 
