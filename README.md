@@ -6,7 +6,6 @@
   <img src="photos/1.jpg" width="250" alt="Ekran Główny">  
   <img src="photos/2.jpg" width="250" alt="Ekran Główny">  
   <img src="photos/3.jpg" width="250" alt="Ekran Główny">  
-  <img src="photos/4.jpg" width="250" alt="Ekran Główny">  
 </p>
 
 
