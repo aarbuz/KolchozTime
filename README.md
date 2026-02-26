@@ -6,7 +6,6 @@
   <img src="images/preview.png" width="250" alt="Ekran Główny">
 </p>
 
-<p align="center"><img src="images/widget.jpg" width="250" alt="Live Activities i Widgety"></p>
 
 ## 🚀 Key Features
 
