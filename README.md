@@ -3,9 +3,7 @@
 **KołchozTime** is a modern iOS application developed in **SwiftUI**, designed to streamline shift management and salary forecasting for shift workers. The application addresses the complexity of calculating earnings with variable rates (day/night, operator/helper roles) and shift durations (8h/12h).
 
 <p align="center">
-  <img src="photos/1.jpg" width="250" alt="Ekran Główny">  
-  <img src="photos/2.jpg" width="250" alt="Ekran Główny">  
-  <img src="photos/3.jpg" width="250" alt="Ekran Główny">  
+  <img src="preview.png" width="250" alt="Ekran Główny">
 </p>
 
 
@@ -33,12 +31,23 @@ The project follows a clean **MVVM** architecture for better maintainability and
 * `ViewModels/`: Handles business logic, salary calculations, and data transformation (`AppViewModel`).
 * `Views/`: SwiftUI views divided into components (`CalendarView`, `AddShiftView`, `SettingsView`, `Components`).
 
-## 📲 How to Run
+## 📲 Installation
 
-1.  Clone this repository.
-2.  Open `KolchozTime.xcodeproj` in **Xcode 16+**.
-3.  Select your target simulator or physical device.
-4.  Press **Cmd + R** to build and run.
+### Option 1: Install via `.ipa` (For users without a Mac or Developer Account)
+You can install this app directly on your iPhone for free using a sideloading tool like **Sideloadly** or **AltStore**.
+
+1. Download the latest `KolchozTime.ipa` file from the **Releases** tab (or request the file directly).
+2. Install the app on your iPhone using your computer.
+3. If you don't know how to sideload `.ipa` files wirelessly, watch this step-by-step tutorial: 
+   📺 **[Sideload IPA with Sideloadly Wireless: Guide (YouTube)](https://www.youtube.com/watch?v=vqTsavQc3lQ)**
+4. **Important:** After installation, go to your iPhone's **Settings > General > VPN & Device Management**, tap on your Apple ID, and select **Trust**. 
+*(Note: If you are on iOS 16 or newer, you must also enable "Developer Mode" in Settings > Privacy & Security).*
+
+### Option 2: Build from Source (For developers)
+1. Clone this repository.
+2. Open `KolchozTime.xcodeproj` in **Xcode 16+**.
+3. Select your target simulator or physical device.
+4. Press **Cmd + R** to build and run.
 
 ## 🔮 Future Roadmap
 
