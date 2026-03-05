@@ -45,7 +45,7 @@ struct ContentView: View {
     
     @State private var showingAddShift = false
     @State private var showingSettings = false
-    @State private var viewMode = 0
+    @State private var viewMode = 1 // Zmiana z 0 na 1 (Domyślnie Kalendarz)
     @State private var showingStatsAlert = false
     @State private var showingReportChoice = false
     @State private var showingShareSheet = false
