@@ -15,15 +15,7 @@ class AppViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(isBackupEnabled, forKey: "IsBackupEnabled")
             if isBackupEnabled {
-                // ZABEZPIECZENIE: Jeśli włączasz kopię na czystej apce, najpierw próbuje odzyskać dane z pliku
-                // żeby nie nadpisać Twojej cennej kopii zapasowej pustą listą!
-                if shifts.isEmpty && restoreFromVisibleBackup() {
-                    // Odzyskano sukcesem, nic nie robimy
-                } else {
-                    createVisibleBackup()
-                }
-            } else {
-                deleteVisibleBackup()
+                createVisibleBackup()
             }
         }
     }
@@ -168,10 +160,14 @@ class AppViewModel: ObservableObject {
         }
     }
     
-    func deleteVisibleBackup() {
+    func deleteVisibleBackup() -> Bool {
         let docsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = docsURL.appendingPathComponent("KolchozBackup.json")
-        try? FileManager.default.removeItem(at: fileURL)
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try? FileManager.default.removeItem(at: fileURL)
+            return true
+        }
+        return false
     }
     
     func restoreFromVisibleBackup() -> Bool {
@@ -204,6 +200,7 @@ class AppViewModel: ObservableObject {
     }
 }
 
+
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -218,6 +215,7 @@ extension Color {
         }
         self.init(.sRGB, red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, opacity: Double(a) / 255)
     }
+    
     func toHex() -> String? {
         let uic = UIColor(self)
         guard let components = uic.cgColor.components, components.count >= 3 else { return nil }

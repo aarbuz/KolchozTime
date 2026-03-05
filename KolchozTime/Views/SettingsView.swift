@@ -3,8 +3,10 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var viewModel: AppViewModel
     @Environment(\.presentationMode) var presentationMode
+    
     @State private var showingBackupAlert = false
     @State private var backupAlertMessage = ""
+    @State private var showingEnableWarning = false
     
     var body: some View {
         NavigationView {
@@ -31,17 +33,11 @@ struct SettingsView: View {
                     HStack { Text("Nocna").bold(); Spacer(); TextField("0.00", text: $viewModel.operatorNightString).keyboardType(.decimalPad).multilineTextAlignment(.trailing) }
                 }
                 
-                Section(header: Text("Zarządzanie Danymi"), footer: Text("Plik 'KolchozBackup.json' znajduje się w systemowej aplikacji 'Pliki' -> 'Na moim iPhonie' -> 'KolchozTime'.")) {
+                Section(header: Text("Zarządzanie Danymi"), footer: Text("Plik 'KolchozBackup.json' znajduje się w aplikacji 'Pliki' -> 'Na moim iPhonie' -> 'KolchozTime'.\n\n⚠️ WAŻNE: System iOS zawsze usuwa folder aplikacji przy jej odinstalowaniu. Aby zachować kopię przed usunięciem apki, ręcznie przenieś ten plik do innego folderu (np. 'Pobrane').")) {
                     
                     Button(action: {
                         let success = viewModel.restoreFromVisibleBackup()
-                        if success {
-                            // Jeśli przywrócono z sukcesem, od razu włączamy suwak, żeby zmiany znowu się zapisywały
-                            viewModel.isBackupEnabled = true
-                            backupAlertMessage = "Pomyślnie przywrócono dane z pliku!"
-                        } else {
-                            backupAlertMessage = "Nie znaleziono pliku KolchozBackup.json. Upewnij się, że jest w folderze aplikacji."
-                        }
+                        backupAlertMessage = success ? "Pomyślnie przywrócono dane z pliku!" : "Nie znaleziono pliku KolchozBackup.json. Upewnij się, że jest w folderze aplikacji."
                         showingBackupAlert = true
                     }) {
                         HStack {
@@ -50,8 +46,28 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Toggle("Automatyczna kopia zapasowa", isOn: $viewModel.isBackupEnabled)
-                        .tint(viewModel.accentColor)
+                    Toggle("Automatyczna kopia zapasowa", isOn: Binding(
+                        get: { viewModel.isBackupEnabled },
+                        set: { newValue in
+                            if newValue {
+                                showingEnableWarning = true
+                            } else {
+                                viewModel.isBackupEnabled = false
+                            }
+                        }
+                    ))
+                    .tint(viewModel.accentColor)
+                    
+                    Button(action: {
+                        let success = viewModel.deleteVisibleBackup()
+                        backupAlertMessage = success ? "Plik z kopią zapasową został trwale usunięty." : "Nie znaleziono pliku do usunięcia."
+                        showingBackupAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "trash.fill")
+                            Text("Usuń plik z kopią")
+                        }
+                    }.foregroundColor(.red)
                 }
                 
                 Section {
@@ -67,7 +83,19 @@ struct SettingsView: View {
             }
             .navigationTitle("Ustawienia")
             .preferredColorScheme(.dark)
-            .alert(isPresented: $showingBackupAlert) { Alert(title: Text("Kopia Zapasowa"), message: Text(backupAlertMessage), dismissButton: .default(Text("OK"))) }
+            .alert(isPresented: $showingBackupAlert) {
+                Alert(title: Text("Kopia Zapasowa"), message: Text(backupAlertMessage), dismissButton: .default(Text("OK")))
+            }
+            .alert(isPresented: $showingEnableWarning) {
+                Alert(
+                    title: Text("Uwaga na nadpisanie!"),
+                    message: Text("Jeśli masz już w folderze stary plik z kopią zapasową, włączenie tej opcji NADPISZE GO obecnymi danymi z aplikacji.\n\nZanim to zrobisz, upewnij się, że użyłeś opcji 'Przywróć dane'."),
+                    primaryButton: .cancel(Text("Anuluj")),
+                    secondaryButton: .destructive(Text("Włącz zapisywanie")) {
+                        viewModel.isBackupEnabled = true
+                    }
+                )
+            }
         }
     }
 }
