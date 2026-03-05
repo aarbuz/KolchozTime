@@ -3,10 +3,7 @@ import SwiftUI
 struct ShareSheet: UIViewControllerRepresentable {
     var activityItems: [Any]
     var applicationActivities: [UIActivity]? = nil
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
-        return controller
-    }
+    func makeUIViewController(context: Context) -> UIActivityViewController { return UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities) }
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
@@ -28,29 +25,45 @@ struct DonutChart: View {
 
 struct ShiftRow: View {
     let shift: WorkShift
+    @ObservedObject var viewModel: AppViewModel
     var shiftColor: Color { if shift.type.contains("1.") || shift.type.contains("Dzień") { return .orange }; if shift.type.contains("2.") { return .purple }; return .blue }
+    
     var body: some View {
         HStack {
-            ZStack { Circle().fill(shiftColor.opacity(0.2)).frame(width: 40, height: 40); Image(systemName: shiftColor == .blue ? "moon.fill" : (shiftColor == .purple ? "sunset.fill" : "sun.max.fill")).foregroundColor(shiftColor) }
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(shift.taskName).font(.headline).foregroundColor(.primary)
-                    Text("(\(shift.role))").font(.caption2).foregroundColor(.gray).textCase(.uppercase)
-                }
-                HStack {
+            ZStack { Circle().fill(shiftColor.opacity(0.2)).frame(width: 45, height: 45); Image(systemName: shiftColor == .blue ? "moon.fill" : (shiftColor == .purple ? "sunset.fill" : "sun.max.fill")).foregroundColor(shiftColor).font(.title3) }
+            VStack(alignment: .leading, spacing: 5) {
+                Text(shift.taskName).font(.headline).foregroundColor(.white).lineLimit(1)
+                HStack(spacing: 5) {
                     Text(shift.date, style: .date)
                     Text("•")
-               
-                    Text("\(String(format: "%g", shift.hoursCount))h").bold().foregroundColor(.orange)
+                    Text("\(String(format: "%g", shift.hoursCount))h").bold().foregroundColor(viewModel.accentColor)
+                    Text("•")
+                    Text(shift.role)
+                        .font(.system(size: 9, weight: .heavy))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(Color.white.opacity(0.2))
+                        .cornerRadius(4)
+                        .textCase(.uppercase)
+                        .lineLimit(1)
+                        .fixedSize()
                 }.font(.caption).foregroundColor(.gray)
             }
             Spacer()
-            Text("+\(shift.earnings, specifier: "%.2f") zł").bold().foregroundColor(.green)
-        }.listRowBackground(Color(UIColor.secondarySystemBackground))
+            VStack(alignment: .trailing, spacing: 5) {
+                Text("+\(shift.earnings, specifier: "%.2f") zł").bold().foregroundColor(.green)
+                Button(action: { viewModel.deleteShift(id: shift.id) }) { Image(systemName: "trash.fill").foregroundColor(.red.opacity(0.8)).font(.caption) }.padding(6).background(Color.red.opacity(0.15)).clipShape(Circle())
+            }
+        }
+        .padding(15)
+        .background(Color.white.opacity(0.08))
+        .cornerRadius(18)
+        .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 3)
     }
 }
 
 struct DetailBox: View {
     let icon: String; let title: String; let color: Color
-    var body: some View { VStack { Image(systemName: icon).font(.title2).foregroundColor(color).padding(.bottom, 5); Text(title).font(.headline).foregroundColor(.primary) }.frame(maxWidth: .infinity).padding().background(Color(UIColor.secondarySystemBackground)).cornerRadius(15) }
+    var body: some View { VStack { Image(systemName: icon).font(.title2).foregroundColor(color).padding(.bottom, 5); Text(title).font(.headline).foregroundColor(.white) }.frame(maxWidth: .infinity).padding().background(Color.white.opacity(0.1)).cornerRadius(15) }
 }
